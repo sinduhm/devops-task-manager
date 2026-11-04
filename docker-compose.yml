@@ -1,0 +1,67 @@
+
+services:
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+
+    container_name: task-frontend
+
+    ports:
+      - "80:80"
+
+    depends_on:
+      - backend
+
+    networks:
+      - frontend-network
+
+    restart: unless-stopped
+
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+
+    container_name: task-backend
+
+    environment:
+      MONGO_URI: mongodb://mongodb:27017/taskmanager
+
+    depends_on:
+      - mongodb
+
+    networks:
+      - frontend-network
+      - backend-network
+
+    restart: unless-stopped
+
+
+  mongodb:
+    image: mongo:8.0
+
+    container_name: task-database
+
+    volumes:
+      - mongo-data:/data/db
+
+    networks:
+      - backend-network
+
+    restart: unless-stopped
+
+
+networks:
+
+  frontend-network:
+    driver: bridge
+
+  backend-network:
+    driver: bridge
+
+
+volumes:
+  mongo-data:
