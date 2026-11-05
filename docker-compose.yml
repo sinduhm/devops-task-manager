@@ -46,7 +46,7 @@ services:
     container_name: task-database
 
     volumes:
-      - mongo-data:/data/db
+      - /mnt/mongodb:/data/db
 
     networks:
       - backend-network
